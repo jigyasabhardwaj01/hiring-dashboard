@@ -1,0 +1,24 @@
+Daniel Okafor
+daniel.okafor@example.com
++1 (415) 555-0142
+221 Market Street, San Francisco, CA 94105
+
+PROFILE
+Product manager with 4 years of experience in consumer apps. Focused on user research and shipping quickly with small teams.
+
+EXPERIENCE
+Product Manager, Pixelnest (2022 - Present)
+- Owned onboarding for a consumer photo app; ran 25 user interviews and shipped a redesign that increased activation 22%.
+- Managed the backlog and weekly sprints with 5 engineers and 2 designers.
+- Tracked KPIs in Mixpanel and wrote SQL queries for funnel analysis.
+- Presented monthly results to the leadership team.
+
+Associate Product Manager, Notely (2020 - 2022)
+- Launched three features, including a sharing flow used by 30% of users.
+- Partnered with marketing on release announcements and wrote release notes.
+
+EDUCATION
+BA Psychology, University of Michigan (2016 - 2020)
+
+SKILLS
+User research, Figma, Mixpanel, SQL, Jira, agile

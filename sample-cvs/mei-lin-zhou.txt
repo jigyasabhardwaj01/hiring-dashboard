@@ -1,0 +1,23 @@
+Mei Lin Zhou
+meilin.zhou@example.com | 555-018-2244
+88 Harbour Road, Singapore
+
+ABOUT
+Data analyst turned product manager. 6 years of experience across analytics and product at a fintech startup.
+
+EXPERIENCE
+Product Manager, Ledgerly (2021 - Present)
+- Own the reporting product; defined the roadmap and prioritized a backlog with engineering.
+- Built dashboards in Looker and Tableau; used SQL and Python for cohort and retention analysis, reducing churn 9%.
+- Ran an A/B test program with 15 experiments, improving conversion 14%.
+- Documented specs and presented findings to executive stakeholders.
+
+Senior Data Analyst, Ledgerly (2018 - 2021)
+- Forecast revenue, built KPI dashboards and statistical models.
+- Partnered with product and sales to define metrics.
+
+EDUCATION
+BSc Statistics, National University of Singapore (2014 - 2018)
+
+SKILLS
+SQL, Python, Looker, Tableau, experimentation, forecasting, analytics

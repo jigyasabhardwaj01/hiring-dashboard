@@ -1,0 +1,30 @@
+Aisha Rahman
+aisha.rahman@example.com | +44 7700 900123
+14 Park Lane, London, UK
+linkedin.com/in/aisharahman-sample
+
+SUMMARY
+Product leader with 11 years of experience taking B2B SaaS products from 0-to-1 to scale. Owns product strategy, roadmap and go-to-market with engineering, design and sales. Data-driven and comfortable presenting to the board.
+
+EXPERIENCE
+Director of Product, Lumen Payments (2019 - Present)
+- Led a team of 6 product managers; set product strategy and OKRs for a $40M ARR payments suite.
+- Launched a new invoicing product 0-to-1, reaching 3,000 customers in 12 months and growing revenue 35%.
+- Partnered with the CEO, sales and marketing leadership on pricing and positioning; presented quarterly roadmap reviews to the board.
+- Built a funnel and cohort analytics practice in Amplitude and SQL, reducing churn by 18%.
+- Hired and mentored 4 PMs; introduced discovery cadence with weekly customer interviews.
+
+Senior Product Manager, Brightcart (2015 - 2019)
+- Owned checkout roadmap end-to-end; shipped 20+ releases and an A/B testing program that lifted conversion 12%.
+- Ran cross-functional sprints with engineering and design; wrote PRDs and specs adopted as company standard.
+- Delivered marketplace migration on time, scaling to 2M monthly users.
+
+Product Manager, Trellis (2013 - 2015)
+- Launched MVP mobile app; ran user research and prioritization workshops.
+
+EDUCATION
+MBA, London Business School (2011 - 2013)
+BSc Economics, University of Leeds (2008 - 2011)
+
+SKILLS
+Product strategy, roadmapping, SQL, Amplitude, Looker, experimentation, stakeholder management, pricing, go-to-market
