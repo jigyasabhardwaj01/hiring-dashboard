@@ -90,9 +90,15 @@ export async function processText(
   };
 
   if (opts.fileBuffer) {
-    const dir = path.join(dataDir(), 'uploads');
-    await fs.mkdir(dir, { recursive: true });
-    await fs.writeFile(path.join(dir, `${id}${path.extname(filename).toLowerCase()}`), opts.fileBuffer);
+    // Keep the raw CV on local disk when possible. Serverless hosts have a read-only filesystem, so this is best-effort;
+    // everything needed (scores, de-identified text, contact fields) is stored in the database.
+    try {
+      const dir = path.join(dataDir(), 'uploads');
+      await fs.mkdir(dir, { recursive: true });
+      await fs.writeFile(path.join(dir, `${id}${path.extname(filename).toLowerCase()}`), opts.fileBuffer);
+    } catch (e) {
+      console.warn(`Could not store the raw CV file (${(e as Error).message}); continuing without it.`);
+    }
   }
   await getStore().insert(candidate);
   return candidate;

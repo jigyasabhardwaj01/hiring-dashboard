@@ -47,6 +47,13 @@ Restart `npm run dev` after editing. The banner at the top of the page tells you
 1. Create a project, open the SQL editor, run `supabase/schema.sql`.
 2. Put the project URL and the **service role** key in `.env.local`. This key is used server-side only; never expose it.
 
+## Deploy (Vercel)
+1. Push to GitHub (done), then on vercel.com choose **Add New → Project → import the repo** (framework: Next.js, no build settings needed).
+2. Add these Environment Variables: `APP_PASSWORD` (**required**: the site asks for it), `DATABASE_URL`, `LLM_PROVIDER`, `LLM_API_KEY`, `RESEND_API_KEY`, `EMAIL_FROM`, `COMPANY_NAME`, `FOUNDER_NAME`.
+3. Deploy. Open the URL; your browser asks for a password (any username, password = `APP_PASSWORD`).
+
+Notes: in production the app refuses to serve (503) unless `APP_PASSWORD` is set. Use a database (`DATABASE_URL`) when hosted; the local-file store doesn't persist on serverless hosts. The raw CV file is only kept on local disk when writable; hosted, the database holds the scores, de-identified text and contact details. Sample data is only auto-loaded for the local file store.
+
 ## How privacy works
 - Everything before the first section heading (name, contact block) is dropped. Emails, phone numbers, links and the candidate's name are scrubbed from the rest.
 - A guard (`assertNoPII` in `lib/extract.ts`) re-checks the final text and aborts if the name/email/phone is still present.

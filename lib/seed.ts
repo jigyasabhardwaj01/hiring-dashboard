@@ -24,7 +24,8 @@ export async function seedSamples(): Promise<number> {
 }
 
 export async function seedIfFirstRun() {
-  if (process.env.SEED_SAMPLE_DATA === 'false') return;
+  // Auto-seed only for the local file store; hosted/serverless filesystems can't hold the marker.
+  if (process.env.SEED_SAMPLE_DATA === 'false' || getStore().kind !== 'file') return;
   try {
     await fs.access(marker());
     return;

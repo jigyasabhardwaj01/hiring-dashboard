@@ -1,6 +1,7 @@
 // Live smoke test: run against a RUNNING server (npm run build && npm start, or npm run dev).
 //   npm run smoke                 -> http://localhost:3000
 //   BASE=http://localhost:3100 npm run smoke
+//   SMOKE_PASSWORD=...  npm run smoke     -> when the target has APP_PASSWORD set
 //   SMOKE_SEND_TO=you@example.com npm run smoke   -> also sends ONE real email (off by default)
 // Everything it creates is deleted at the end.
 import fs from 'fs';
@@ -13,14 +14,15 @@ const created = [];
 
 const check = (name, ok, detail = '') => { ok ? pass++ : fail++; console.log(`${ok ? '  ✓' : '  ✗ FAIL'} ${name}${!ok && detail ? ` — ${detail}` : ''}`); return ok; };
 const skip = (name, why) => { skipped++; console.log(`  - skipped ${name} (${why})`); };
-const req = async (path, init) => { const r = await fetch(BASE + path, init); let j = null; try { j = await r.clone().json(); } catch {} return { status: r.status, json: j, res: r }; };
+const AUTH = process.env.SMOKE_PASSWORD ? { authorization: 'Basic ' + Buffer.from('smoke:' + process.env.SMOKE_PASSWORD).toString('base64') } : {};
+const req = async (path, init = {}) => { const r = await fetch(BASE + path, { ...init, headers: { ...AUTH, ...(init.headers || {}) } }); let j = null; try { j = await r.clone().json(); } catch {} return { status: r.status, json: j, res: r }; };
 const upload = async (buf, name, role) => { const fd = new FormData(); fd.append('file', new Blob([buf]), name); fd.append('role', role); const r = await req('/api/candidates', { method: 'POST', body: fd }); if (r.json?.candidate) created.push(r.json.candidate.id); return r; };
 const post = (path, body) => req(path, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
 
 console.log(`Smoke testing ${BASE}`);
 try {
   console.log('\nApp & config');
-  const home = await fetch(BASE);
+  const home = await fetch(BASE, { headers: AUTH });
   check('home page renders', home.status === 200 && (await home.text()).includes('Hiring Dashboard'));
   const st = await req('/api/status');
   check('status endpoint', st.status === 200 && typeof st.json.llmReady === 'boolean', JSON.stringify(st.json));
