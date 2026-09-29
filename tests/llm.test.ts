@@ -64,7 +64,7 @@ describe('gemini provider', () => {
     expect(provider).toBe('gemini');
     expect(result.brief.strengths).toEqual(['a']);
     const [url, init] = f.mock.calls[0];
-    expect(url).toContain('/models/gemini-2.5-flash:generateContent');
+    expect(url).toContain('/models/gemini-3.8-flash:generateContent');
     expect(url).not.toContain('gem-key');
     expect(init.headers['x-goog-api-key']).toBe('gem-key');
     expect(JSON.parse(init.body).generationConfig.responseMimeType).toBe('application/json');

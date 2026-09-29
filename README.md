@@ -33,7 +33,7 @@ You can also upload the files in `sample-cvs/` to try the real flow.
 |---|---|
 | `LLM_PROVIDER` | `gemini`, `anthropic`, `openai`, or `mock` (offline demo writer, no key needed) |
 | `LLM_API_KEY` | Your AI provider key |
-| `LLM_MODEL` | Optional override (defaults: `gemini-2.5-flash` / `claude-sonnet-5-5` / `gpt-4o`) |
+| `LLM_MODEL` | Optional override (defaults: `gemini-3.8-flash` / `claude-sonnet-5-5` / `gpt-4o`) |
 | `RESEND_API_KEY` | From resend.com |
 | `EMAIL_FROM` | e.g. `Acme Hiring <hiring@acme.com>`. The domain must be verified in Resend |
 | `DATABASE_URL` | Optional. Neon/Postgres connection string; the table is created automatically |

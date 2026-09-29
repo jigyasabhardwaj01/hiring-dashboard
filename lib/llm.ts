@@ -115,7 +115,7 @@ async function callOpenAI(i: AiInput): Promise<string> {
 }
 
 async function callGemini(i: AiInput): Promise<string> {
-  const model = cfg.model() || 'gemini-2.5-flash';
+  const model = cfg.model() || 'gemini-3.8-flash';
   const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
     method: 'POST',
     headers: { 'x-goog-api-key': cfg.llmKey(), 'content-type': 'application/json' },
