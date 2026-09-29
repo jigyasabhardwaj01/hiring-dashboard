@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import type { Candidate, Role, RoleScore, Verdict } from '@/lib/types';
 import { api, postJson, ROLE_NAME, type AppStatus } from '@/lib/client';
-import { Alert, Avatar, Bar, btn, Modal, RoleChip, ScoreRing, Spinner, StatusBadge, TONE_TEXT } from './ui';
+import { Alert, Avatar, Bar, btn, Icon, Modal, RoleChip, ScoreRing, Spinner, StatusBadge, TONE_TEXT } from './ui';
 import { tone } from '@/lib/client';
 
 type Tab = 'overview' | 'brief' | 'email' | 'cv';
@@ -11,10 +11,10 @@ const TABS: [Tab, string][] = [['overview', 'Scores'], ['brief', 'Interview brie
 
 function Breakdown({ title, rs, applied }: { title: string; rs: RoleScore; applied: boolean }) {
   return (
-    <div className="rounded-xl border border-slate-200 p-4">
+    <div className="rounded-2xl border border-blush-100 bg-gradient-to-b from-white to-ivory p-4 shadow-soft">
       <div className="mb-3 flex items-center justify-between">
-        <h4 className="flex items-center gap-2 text-sm font-semibold">{title}{applied && <span className="rounded bg-indigo-100 px-1.5 py-0.5 text-[11px] font-medium text-indigo-700">applied</span>}</h4>
-        <span className={`text-lg font-bold tabular-nums ${TONE_TEXT[tone(rs.total)]}`}>{rs.total}</span>
+        <h4 className="flex items-center gap-2 font-display text-base font-semibold">{title}{applied && <span className="rounded-full bg-blush-100 px-2 py-0.5 text-[11px] font-medium text-blush-700">applied</span>}</h4>
+        <span className={`font-display text-2xl font-semibold tabular-nums ${TONE_TEXT[tone(rs.total)]}`}>{rs.total}</span>
       </div>
       <ul className="space-y-3">
         {rs.dimensions.map((d) => (
@@ -29,11 +29,11 @@ function Breakdown({ title, rs, applied }: { title: string; rs: RoleScore; appli
   );
 }
 
-function BriefList({ title, items, icon }: { title: string; items: string[]; icon: string }) {
+function BriefList({ title, items, icon, chip }: { title: string; items: string[]; icon: string; chip: string }) {
   return (
     <section>
-      <h4 className="mb-2 text-sm font-semibold">{title}</h4>
-      <ul className="space-y-2 text-sm text-slate-700">{items.map((s, i) => <li key={i} className="flex gap-2"><span aria-hidden className="mt-0.5 shrink-0">{icon}</span><span>{s}</span></li>)}</ul>
+      <h4 className="mb-2.5 font-display text-base font-semibold">{title}</h4>
+      <ul className="space-y-2.5 text-sm leading-relaxed text-slate-700">{items.map((s, i) => <li key={i} className="flex gap-2.5"><span aria-hidden className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full ${chip}`}><Icon name={icon} className="h-3 w-3" /></span><span>{s}</span></li>)}</ul>
     </section>
   );
 }
@@ -94,28 +94,28 @@ export function DetailPanel({ c, status, onChange, onRemove, onBack, notify }: {
 
   return (
     <div className="flex h-full flex-col">
-      <div className="border-b border-slate-200 px-5 py-4">
+      <div className="border-b border-blush-100 bg-gradient-to-b from-blush-50/70 to-white px-6 py-5">
         <button onClick={onBack} className="mb-3 text-sm text-slate-500 hover:text-slate-800 lg:hidden">← All candidates</button>
         <div className="flex items-center gap-4">
           <Avatar name={c.name} size={48} />
           <div className="min-w-0 flex-1">
-            <h2 data-testid="detail-name" className="truncate text-xl font-semibold">{c.name}</h2>
-            <p className="flex flex-wrap items-center gap-2 text-sm text-slate-500"><RoleChip role={c.applied_role} /> Applied for {ROLE_NAME[c.applied_role]}{c.sample && <span className="rounded bg-slate-100 px-1.5 py-0.5 text-[11px]">sample</span>}</p>
+            <h2 data-testid="detail-name" className="truncate font-display text-2xl font-semibold">{c.name}</h2>
+            <p className="flex flex-wrap items-center gap-2 text-sm text-slate-500"><RoleChip role={c.applied_role} /> Applied for {ROLE_NAME[c.applied_role]}{c.sample && <span className="rounded-full bg-lav-100 px-2 py-0.5 text-[11px] text-lav-700">sample</span>}</p>
           </div>
           <ScoreRing value={c.overall_score} size={60} label="Overall fit" />
         </div>
         <div className="mt-3 flex flex-wrap items-center gap-2"><StatusBadge status={c.status} />
-          {diff >= 8 && <span className="rounded-full bg-violet-50 px-2.5 py-1 text-xs font-medium text-violet-700 ring-1 ring-inset ring-violet-200">Stronger fit for {other} (+{diff})</span>}
+          {diff >= 8 && <span className="rounded-full bg-lav-50 px-2.5 py-1 text-xs font-medium text-lav-700 ring-1 ring-inset ring-lav-200">Stronger fit for {other} (+{diff})</span>}
         </div>
       </div>
 
-      <div role="tablist" className="flex gap-1 overflow-x-auto border-b border-slate-200 px-3">
+      <div role="tablist" className="flex gap-1 overflow-x-auto border-b border-blush-100 px-4">
         {TABS.map(([k, label]) => (
-          <button key={k} role="tab" aria-selected={tab === k} onClick={() => setTab(k)} className={`whitespace-nowrap border-b-2 px-3 py-3 text-sm font-medium ${tab === k ? 'border-indigo-600 text-indigo-700' : 'border-transparent text-slate-500 hover:text-slate-800'}`}>{label}</button>
+          <button key={k} role="tab" aria-selected={tab === k} onClick={() => setTab(k)} className={`whitespace-nowrap border-b-2 px-3.5 py-3 text-sm font-medium transition ${tab === k ? 'border-blush-500 text-blush-700' : 'border-transparent text-slate-500 hover:text-slate-800'}`}>{label}</button>
         ))}
       </div>
 
-      <div className="flex-1 space-y-5 overflow-y-auto px-5 py-5" role="tabpanel">
+      <div className="flex-1 space-y-5 overflow-y-auto px-6 py-6" role="tabpanel">
         {error && <Alert onClose={() => setError(null)}>{error}</Alert>}
         {c.ai_error && !c.brief && <Alert kind="warn" action={<button className={btn.secondary} onClick={() => redraft()} disabled={busy !== null}>{busy === 'redraft' ? <><Spinner /> Retrying…</> : 'Retry AI'}</button>}>Scores are saved but the AI step failed: {c.ai_error}</Alert>}
 
@@ -124,7 +124,7 @@ export function DetailPanel({ c, status, onChange, onRemove, onBack, notify }: {
             <div className="grid grid-cols-2 gap-3 text-center">
               {(['PM', 'SPM'] as Role[]).map((r) => {
                 const v = r === 'PM' ? c.pm_score : c.spm_score;
-                return <div key={r} className={`flex items-center justify-center gap-3 rounded-xl border p-3 ${r === c.applied_role ? 'border-indigo-300 bg-indigo-50/50' : 'border-slate-200'}`}><ScoreRing value={v} size={52} label={`${r} fit`} /><div className="text-left"><p className="text-sm font-semibold">{r} fit</p><p className="text-xs text-slate-500">{r === c.applied_role ? 'applied role' : 'other role'}</p></div></div>;
+                return <div key={r} className={`flex items-center justify-center gap-3 rounded-2xl border p-3.5 shadow-soft ${r === c.applied_role ? 'border-blush-300 bg-blush-50/70' : 'border-lav-100 bg-lav-50/50'}`}><ScoreRing value={v} size={52} label={`${r} fit`} /><div className="text-left"><p className="font-display text-base font-semibold">{r} fit</p><p className="text-xs text-slate-500">{r === c.applied_role ? 'applied role' : 'other role'}</p></div></div>;
               })}
             </div>
             <div className="grid gap-4 xl:grid-cols-2">
@@ -142,10 +142,10 @@ export function DetailPanel({ c, status, onChange, onRemove, onBack, notify }: {
             </div>
             <p className="text-sm leading-relaxed text-slate-700">{c.brief.summary}</p>
             <div className="grid gap-6 md:grid-cols-2">
-              <BriefList title="Strengths" items={c.brief.strengths} icon="✅" />
-              <BriefList title="Gaps" items={c.brief.gaps} icon="⚠️" />
+              <BriefList title="Strengths" items={c.brief.strengths} icon="check" chip="bg-emerald-100 text-emerald-700" />
+              <BriefList title="Gaps" items={c.brief.gaps} icon="alert" chip="bg-amber-100 text-amber-700" />
             </div>
-            <BriefList title="Suggested interview questions" items={c.brief.questions} icon="❓" />
+            <BriefList title="Suggested interview questions" items={c.brief.questions} icon="question" chip="bg-lav-100 text-lav-700" />
           </>
         ) : <p className="text-sm text-slate-500">No brief yet.</p>)}
 
@@ -163,22 +163,22 @@ export function DetailPanel({ c, status, onChange, onRemove, onBack, notify }: {
             )}
             <div className="space-y-3">
               <label className="block text-xs font-medium text-slate-600">To
-                <input aria-label="To" value={to} onChange={(e) => setTo(e.target.value)} disabled={sent} placeholder="candidate@email.com" className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm disabled:bg-slate-50" />
+                <input aria-label="To" value={to} onChange={(e) => setTo(e.target.value)} disabled={sent} placeholder="candidate@email.com" className="mt-1 w-full rounded-xl border border-blush-200 bg-white px-3.5 py-2.5 text-sm focus:border-blush-400 disabled:bg-slate-50" />
                 {!sent && !to && <span className="mt-1 block text-amber-600">No email address found in the CV. Enter one to send.</span>}
                 {!sent && to && !validTo && <span className="mt-1 block text-rose-600">That doesn’t look like a valid email address.</span>}
                 {!sent && c.sample && <span className="mt-1 block text-slate-500">Sample candidate: this address is fake. Change it to test sending to yourself.</span>}
               </label>
               <label className="block text-xs font-medium text-slate-600">Subject
-                <input aria-label="Subject" value={subject} onChange={(e) => setSubject(e.target.value)} disabled={sent} className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm disabled:bg-slate-50" />
+                <input aria-label="Subject" value={subject} onChange={(e) => setSubject(e.target.value)} disabled={sent} className="mt-1 w-full rounded-xl border border-blush-200 bg-white px-3.5 py-2.5 text-sm focus:border-blush-400 disabled:bg-slate-50" />
               </label>
               <label className="block text-xs font-medium text-slate-600">Message
-                <textarea aria-label="Message" value={body} onChange={(e) => setBody(e.target.value)} disabled={sent} rows={12} className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 font-sans text-sm leading-relaxed disabled:bg-slate-50" />
+                <textarea aria-label="Message" value={body} onChange={(e) => setBody(e.target.value)} disabled={sent} rows={12} className="mt-1 w-full rounded-xl border border-blush-200 bg-white px-3.5 py-2.5 text-sm leading-relaxed focus:border-blush-400 disabled:bg-slate-50" />
               </label>
             </div>
             {!sent && (
               <div className="flex flex-wrap items-center gap-3">
                 <button className={btn.primary} disabled={busy !== null || !validTo || !subject.trim() || !body.trim() || emailOff} onClick={() => setConfirmSend(true)}>
-                  {busy === 'send' ? <><Spinner /> Sending…</> : verdict === 'interview' ? '✉️ Review & send invite' : '✉️ Review & send rejection'}
+                  {busy === 'send' ? <><Spinner /> Sending…</> : <><Icon name="mail" />{ verdict === 'interview' ? 'Review & send invite' : 'Review & send rejection'}</>}
                 </button>
                 {dirty && <button className={btn.secondary} disabled={busy !== null} onClick={save}>{busy === 'save' ? 'Saving…' : 'Save draft'}</button>}
                 {dirty && <span className="text-xs text-slate-500">Unsaved changes</span>}
@@ -190,7 +190,7 @@ export function DetailPanel({ c, status, onChange, onRemove, onBack, notify }: {
         {tab === 'cv' && (
           <div className="space-y-4">
             <Alert kind="info">The AI only saw the text below. Your candidate’s name, email, phone, address and links were removed first and the name was replaced with “Candidate”. Model: {c.provider ?? 'not run'}.</Alert>
-            <pre data-testid="ai-input" className="max-h-[28rem] overflow-auto whitespace-pre-wrap rounded-xl bg-slate-900 p-4 text-xs leading-relaxed text-slate-100">{c.sanitized_text}</pre>
+            <pre data-testid="ai-input" className="max-h-[28rem] overflow-auto whitespace-pre-wrap rounded-2xl bg-slate-800 p-4 text-xs leading-relaxed text-blush-50">{c.sanitized_text}</pre>
             <div className="flex items-center justify-between text-xs text-slate-500">
               <span>File: {c.cv_filename}{c.phone ? '' : ''}</span>
               <button onClick={() => setConfirmDelete(true)} className="font-medium text-rose-600 hover:underline">Delete candidate</button>
@@ -204,7 +204,7 @@ export function DetailPanel({ c, status, onChange, onRemove, onBack, notify }: {
         <dl className="space-y-2 text-sm">
           <div><dt className="text-xs text-slate-500">To</dt><dd className="font-medium">{to.trim()}</dd></div>
           <div><dt className="text-xs text-slate-500">Subject</dt><dd className="font-medium">{subject}</dd></div>
-          <div><dt className="text-xs text-slate-500">Message</dt><dd className="max-h-48 overflow-auto whitespace-pre-wrap rounded-lg bg-slate-50 p-3">{body}</dd></div>
+          <div><dt className="text-xs text-slate-500">Message</dt><dd className="max-h-48 overflow-auto whitespace-pre-wrap rounded-xl bg-blush-50/60 p-3">{body}</dd></div>
         </dl>
         <p className="mt-3 text-xs text-slate-500">This can’t be undone. The candidate’s status will change to {verdict === 'interview' ? 'Sent — Interview Invite' : 'Sent — Rejection'}.</p>
       </Modal>
