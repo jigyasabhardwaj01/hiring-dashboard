@@ -104,7 +104,9 @@ export function assertNoPII(sanitized: string, name: string, email: string | nul
   const lower = sanitized.toLowerCase();
   const leaks: string[] = [];
   if (email && lower.includes(email.toLowerCase())) leaks.push('email');
-  if (phone && sanitized.replace(/\D/g, '').includes(phone.replace(/\D/g, '')) && phone.replace(/\D/g, '').length >= 7) leaks.push('phone');
+  // Compare the last 9 digits so country-code / formatting differences can't hide a leak.
+  const tail = phone?.replace(/\D/g, '').slice(-9) ?? '';
+  if (tail.length >= 7 && sanitized.replace(/\D/g, '').includes(tail)) leaks.push('phone');
   if (name !== 'Unknown Candidate' && lower.includes(name.toLowerCase())) leaks.push('name');
   if (leaks.length) throw new Error(`De-identification failed (${leaks.join(', ')} still present); nothing was sent to the AI.`);
 }

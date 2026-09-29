@@ -14,17 +14,17 @@ export interface Store {
   remove(id: string): Promise<void>;
 }
 
-export const DATA_DIR = path.join(process.cwd(), 'data');
-const FILE = path.join(DATA_DIR, 'candidates.json');
+export const dataDir = () => process.env.DATA_DIR || path.join(process.cwd(), 'data');
+const file = () => path.join(dataDir(), 'candidates.json');
 
 const fileStore: Store = {
   kind: 'file',
   async list() {
     try {
-      return JSON.parse(await fs.readFile(FILE, 'utf8'));
+      return JSON.parse(await fs.readFile(file(), 'utf8'));
     } catch (e: any) {
       if (e.code === 'ENOENT') return [];
-      throw new Error(`Could not read local database (${FILE}): ${e.message}`);
+      throw new Error(`Could not read local database (${file()}): ${e.message}`);
     }
   },
   async get(id) {
@@ -33,19 +33,19 @@ const fileStore: Store = {
   async insert(c) {
     const all = await this.list();
     all.push(c);
-    await fs.mkdir(DATA_DIR, { recursive: true });
-    await fs.writeFile(FILE, JSON.stringify(all, null, 2));
+    await fs.mkdir(dataDir(), { recursive: true });
+    await fs.writeFile(file(), JSON.stringify(all, null, 2));
   },
   async update(id, patch) {
     const all = await this.list();
     const i = all.findIndex((c) => c.id === id);
     if (i < 0) throw new Error('Candidate not found.');
     all[i] = { ...all[i], ...patch };
-    await fs.writeFile(FILE, JSON.stringify(all, null, 2));
+    await fs.writeFile(file(), JSON.stringify(all, null, 2));
     return all[i];
   },
   async remove(id) {
-    await fs.writeFile(FILE, JSON.stringify((await this.list()).filter((c) => c.id !== id), null, 2));
+    await fs.writeFile(file(), JSON.stringify((await this.list()).filter((c) => c.id !== id), null, 2));
   },
 };
 

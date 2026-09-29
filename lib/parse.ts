@@ -5,8 +5,10 @@ export async function parseCv(buffer: Buffer, filename: string): Promise<string>
   let text = '';
   try {
     if (ext === 'pdf') {
-      const pdf = (await import('pdf-parse/lib/pdf-parse.js')).default;
-      text = (await pdf(buffer)).text;
+      // unpdf (modern pdf.js build). pdf-parse's 2018 pdf.js corrupted its state across parses.
+      const { extractText, getDocumentProxy } = await import('unpdf');
+      const pdf = await getDocumentProxy(new Uint8Array(buffer));
+      text = (await extractText(pdf, { mergePages: true })).text;
     } else if (ext === 'docx') {
       const mammoth = await import('mammoth');
       text = (await mammoth.extractRawText({ buffer })).value;

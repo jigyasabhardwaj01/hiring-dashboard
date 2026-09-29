@@ -81,16 +81,32 @@ Recommended verdict = interview if the applied-role score ≥ `INTERVIEW_THRESHO
 - **Email fails**: red message on the card, status stays Pending, nothing is marked sent.
 - **Storage/network problems**: shown at the top of the list.
 
+## Testing
+
+```bash
+npm test            # 78 unit / regression / API tests (no network, no real keys, isolated temp data)
+npm run typecheck
+npm run build && PORT=3100 npm start &
+BASE=http://localhost:3100 npm run smoke     # live smoke test against a running server
+```
+
+- **Unit:** extraction, de-identification, scoring, years-of-experience, LLM parsing/validation, providers (Gemini/Anthropic/OpenAI request shape and error mapping), file store, PDF/DOCX/TXT parsing.
+- **Regression (things that broke or must never break):** no personal details ever appear in the request sent to the AI; the draft has the real name and no `{{token}}`; an email is *never* sent by upload/redraft; a second send is refused (409); failed sends leave the status Pending; an AI failure still saves the candidate; PDFs still parse after DOCX (and repeatedly).
+- **API tests** call the real route handlers (upload, list/seed, redraft, edit, delete, send with a stubbed Resend).
+- **Smoke** hits the real server (and whatever database `.env.local` points at): page render, status, DOCX→PDF→TXT uploads, error paths, persistence, edit/save, safety checks, then deletes everything it created. It sends no email unless you set `SMOKE_SEND_TO=you@example.com`.
+
 ## Project layout
 ```
 app/page.tsx                 the dashboard UI
 app/api/candidates/…         upload, list, edit, delete, redraft, send
-lib/parse.ts                 PDF/DOCX → text
+lib/parse.ts                 PDF/DOCX/TXT → text (unpdf, mammoth)
 lib/extract.ts               field extraction + de-identification
 lib/scoring.ts               rubrics
 lib/llm.ts                   Anthropic / OpenAI / mock providers
 lib/email.ts                 Resend
 lib/db.ts                    Supabase or local JSON store
+app/components/              UI: dashboard list, detail panel, upload modal
+tests/  scripts/smoke.mjs    test suites and live smoke test
 sample-cvs/                  4 fake CVs used as seed data
 ```
 Uploaded CV files are kept in `data/uploads/` (local disk, even when Supabase is used for records).

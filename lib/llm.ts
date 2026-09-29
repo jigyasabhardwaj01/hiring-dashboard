@@ -57,14 +57,14 @@ ${i.sanitized.slice(0, 12000)}
 """`;
 }
 
-function parseJson(text: string): unknown {
+export function parseJson(text: string): unknown {
   const start = text.indexOf('{');
   const end = text.lastIndexOf('}');
   if (start < 0 || end < start) throw new Error('AI reply contained no JSON.');
   return JSON.parse(text.slice(start, end + 1));
 }
 
-function validate(raw: any, i: AiInput): AiResult {
+export function validate(raw: any, i: AiInput): AiResult {
   const arr = (x: unknown) => (Array.isArray(x) ? x.map(String).filter(Boolean) : []);
   if (!raw?.email?.body || !raw?.email?.subject) throw new Error('AI reply was missing the email draft.');
   const verdict: Verdict = i.forceVerdict ?? (raw.verdict === 'reject' ? 'reject' : 'interview');

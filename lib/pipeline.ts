@@ -2,7 +2,7 @@ import { randomUUID } from 'crypto';
 import { promises as fs } from 'fs';
 import path from 'path';
 import { cfg } from './config';
-import { DATA_DIR, getStore } from './db';
+import { dataDir, getStore } from './db';
 import { assertNoPII, extractCv } from './extract';
 import { generate, NAME_TOKEN } from './llm';
 import { parseCv } from './parse';
@@ -90,7 +90,7 @@ export async function processText(
   };
 
   if (opts.fileBuffer) {
-    const dir = path.join(DATA_DIR, 'uploads');
+    const dir = path.join(dataDir(), 'uploads');
     await fs.mkdir(dir, { recursive: true });
     await fs.writeFile(path.join(dir, `${id}${path.extname(filename).toLowerCase()}`), opts.fileBuffer);
   }
