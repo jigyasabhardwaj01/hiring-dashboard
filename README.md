@@ -1,5 +1,7 @@
 # Hiring Dashboard
 
+**Live app:** https://hiring-dashboard-inky.vercel.app · **Repo:** https://github.com/jigyasabhardwaj01/hiring-dashboard
+
 Upload a CV, pick the role (PM or Senior PM), and get a ranked score, an interview brief and a draft email.
 **You stay in control: nothing is emailed until you click Send.**
 
