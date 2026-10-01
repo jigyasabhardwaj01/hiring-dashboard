@@ -49,3 +49,24 @@ describe('processText', () => {
     expect(await getStore().list()).toHaveLength(1);
   });
 });
+
+describe('REGRESSION: candidate name shown in the dashboard and used in the email', () => {
+  const CV = 'Strategic Product Lead\n\nSUMMARY\nProduct manager with 4 years of experience.\n\nEXPERIENCE\nProduct Manager, Foo (2021 - Present)\n- Led roadmap, shipped 5 releases, used SQL and A/B tests with engineering and design.\n\nISHAAN ROYIshaan Roy\nsquad_1@pg27.mesaschool.co+91 90491 53824';
+
+  it('uses the real name (from the CV or file name), not "Squad", and addresses the email to the first name', async () => {
+    const c = await processText(CV, '05_ishaan_roy.pdf', 'PM', { provider: 'mock' });
+    expect(c.name).toBe('Ishaan Roy');
+    expect(c.draft_body).toContain('Hi Ishaan,');
+    expect(c.draft_body).not.toMatch(/Squad|Candidate/);
+    expect(c.email).toBe('squad_1@pg27.mesaschool.co');
+  });
+  it('still never sends the name to the AI', async () => {
+    process.env.LLM_API_KEY = 'k';
+    const f = vi.fn().mockResolvedValue({ ok: true, status: 200, json: async () => ({ candidates: [{ content: { parts: [{ text: JSON.stringify(GOOD) }] } }] }) });
+    vi.stubGlobal('fetch', f);
+    const c = await processText(CV, '05_ishaan_roy.pdf', 'PM', { provider: 'gemini' });
+    const wire = JSON.stringify(f.mock.calls[0]).toLowerCase();
+    expect(wire).not.toMatch(/ishaan|roy|squad_1|90491/);
+    expect(c.draft_body).toContain('Hi Ishaan,');
+  });
+});

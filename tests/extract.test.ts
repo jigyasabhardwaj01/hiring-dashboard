@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { assertNoPII, extractCv } from '@/lib/extract';
+import { assertNoPII, extractCv, nameFromFilename } from '@/lib/extract';
 import { PII, sample, SAMPLES } from './helpers';
 
 describe('extractCv', () => {
@@ -85,4 +85,69 @@ describe('assertNoPII', () => {
     expect(() => assertNoPII('call 4155550100', 'Jo Bloggs', null, '+1 415 555 0100')).toThrow(/phone/);
     expect(() => assertNoPII('Jo Bloggs did it', 'Jo Bloggs', null, null)).toThrow(/name/);
   });
+});
+
+// REGRESSION: real-world CV layouts where the name is not a clean header line (all showed up as "Squad",
+// "PROFESSIONAL SYNOPSIS", "Product Manager"... before). Names often exist only in a sidebar, doubled in two
+// cases with no space, next to the email, or only in the file name.
+describe('name detection on messy real-world layouts', () => {
+  const BODY = 'SUMMARY\nProduct manager with 3 years of experience launching SaaS products.\n\nEXPERIENCE\nProduct Manager, Foo (2022 - Present)\n- Led roadmap and shipped 4 releases.\n';
+  const GENERIC = 'squad_1@pg27.mesaschool.co';
+
+  it('finds a name doubled in two cases and glued together (sidebar text), and scrubs it everywhere', () => {
+    const cv = extractCv(`${BODY}\nROHAN MEHTARohan Mehta\n${GENERIC}+91 98202 1134598202 11345 rohan-mehta\n`);
+    expect(cv.name).toBe('Rohan Mehta');
+    expect(cv.sanitized).not.toMatch(/rohan|mehta|squad|9820/i);
+  });
+  it('handles the reverse order (Title then UPPER)', () => {
+    expect(extractCv(`${BODY}\nAvinash MukherjeeAVINASH MUKHERJEE ${GENERIC}\n`).name).toBe('Avinash Mukherjee');
+  });
+  it('finds a name on the same line as the email', () => {
+    const cv = extractCv(`Kabir Mehta ${GENERIC}\n+91 98202 11345\n\n${BODY}`);
+    expect(cv.name).toBe('Kabir Mehta');
+    expect(cv.email).toBe(GENERIC);
+  });
+  it('falls back to the file name when the text has no name, and never turns a generic email into "Squad"', () => {
+    const cv = extractCv(`${BODY}\n${GENERIC}\n`, '05_ishaan_roy.pdf');
+    expect(cv.name).toBe('Ishaan Roy');
+    expect(extractCv(`${BODY}\n${GENERIC}\n`).name).toBe('Unknown Candidate');
+  });
+  it('scrubs file-name-derived names found anywhere in the text', () => {
+    const cv = extractCv(`${BODY}\n- Mentored by Ishaan Roy at Foo.\nishaan-roy-product\n${GENERIC}`, '05_ishaan_roy.pdf');
+    expect(cv.sanitized).not.toMatch(/ishaan|\broy\b/i);
+  });
+  it.each(['PROFESSIONAL SYNOPSIS', 'Product Manager', 'AI Product Manager', 'Academic Qualifications', 'CORE COMPETENCIES', 'Strategy & Operations Leader', 'New Delhi'])(
+    'never mistakes "%s" for a name',
+    (line) => {
+      expect(extractCv(`${line}\n${BODY}\n${GENERIC}\n`, '07_aditya_nair.pdf').name).toBe('Aditya Nair');
+      expect(extractCv(`${line}\n${BODY}`).name).toBe('Unknown Candidate');
+    }
+  );
+  it('prefers the name in the text over a junk file name', () => {
+    expect(extractCv(`Priya Krishnan ${GENERIC}\n\n${BODY}`, 'resume_final_v3.pdf').name).toBe('Priya Krishnan');
+  });
+  it('prefers an explicit "Name:" label', () => {
+    expect(extractCv(`Name: Meera Das\n\n${BODY}`, '05_ishaan_roy.pdf').name).toBe('Meera Das');
+  });
+  it('scrubs 5+5 digit phone numbers and social @handles', () => {
+    const cv = extractCv(`Jane Doe\n\n${BODY}\n90491 53824\nPodcast (@builtforbharat) grew views.`);
+    expect(cv.sanitized).not.toMatch(/90491|53824|builtforbharat|@/);
+  });
+  it('does not corrupt words that merely contain a short name token', () => {
+    const cv = extractCv(`Arnav Sen\n\nSUMMARY\nSenior leader with a good sense of dashboards.\nArnav Sen led it.`, 'arnav_sen.pdf');
+    expect(cv.sanitized).toContain('Senior leader');
+    expect(cv.sanitized).toContain('sense');
+    expect(cv.sanitized).not.toMatch(/Arnav/);
+  });
+});
+
+describe('nameFromFilename', () => {
+  it.each([
+    ['05_ishaan_roy.pdf', 'Ishaan Roy'],
+    ['pm_02_kabir_mehta.pdf', 'Kabir Mehta'],
+    ['spm_16_siddharth_rao.pdf', 'Siddharth Rao'],
+    ['Jane Doe - Resume.pdf', 'Jane Doe'],
+    ['Jane_Doe_CV_final.docx', 'Jane Doe'],
+  ])('%s → %s', (f, n) => expect(nameFromFilename(f)).toBe(n));
+  it.each(['resume.pdf', 'cv_final_v2.pdf', 'download.pdf', '12345.pdf'])('%s → null (no name)', (f) => expect(nameFromFilename(f)).toBeNull());
 });

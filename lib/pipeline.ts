@@ -55,7 +55,7 @@ export async function processText(
   role: Role,
   opts: { sample?: boolean; provider?: string; fileBuffer?: Buffer } = {}
 ): Promise<Candidate> {
-  const cv = extractCv(text);
+  const cv = extractCv(text, filename);
   assertNoPII(cv.sanitized, cv.name, cv.email, cv.phone);
   const scores = scoreBoth(cv.sanitized, cv.yearsExperience);
   const id = randomUUID();
