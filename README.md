@@ -49,10 +49,10 @@ Restart `npm run dev` after editing. The banner at the top of the page tells you
 
 ## Deploy (Vercel)
 1. Push to GitHub (done), then on vercel.com choose **Add New → Project → import the repo** (framework: Next.js, no build settings needed).
-2. Add these Environment Variables: `APP_PASSWORD` (**required**: the site asks for it), `DATABASE_URL`, `LLM_PROVIDER`, `LLM_API_KEY`, `RESEND_API_KEY`, `EMAIL_FROM`, `COMPANY_NAME`, `FOUNDER_NAME`.
-3. Deploy. Open the URL; your browser asks for a password (any username, password = `APP_PASSWORD`).
+2. Add these Environment Variables: `DATABASE_URL`, `LLM_PROVIDER`, `LLM_API_KEY`, `RESEND_API_KEY`, `EMAIL_FROM`, `COMPANY_NAME`, `FOUNDER_NAME`.
+3. Deploy and open the URL. There is no login: anyone with the link can use the app, so keep the URL private.
 
-Notes: in production the app refuses to serve (503) unless `APP_PASSWORD` is set. Use a database (`DATABASE_URL`) when hosted; the local-file store doesn't persist on serverless hosts. The raw CV file is only kept on local disk when writable; hosted, the database holds the scores, de-identified text and contact details. Sample data is only auto-loaded for the local file store.
+Notes: use a database (`DATABASE_URL`) when hosted; the local-file store doesn't persist on serverless hosts. The raw CV file is only kept on local disk when writable; hosted, the database holds the scores, de-identified text and contact details. Sample data is only auto-loaded for the local file store.
 
 ## How privacy works
 - Everything before the first section heading (name, contact block) is dropped. Emails, phone numbers, links and the candidate's name are scrubbed from the rest.

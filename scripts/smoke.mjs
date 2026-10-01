@@ -1,7 +1,6 @@
 // Live smoke test: run against a RUNNING server (npm run build && npm start, or npm run dev).
 //   npm run smoke                 -> http://localhost:3000
 //   BASE=http://localhost:3100 npm run smoke
-//   SMOKE_PASSWORD=...  npm run smoke     -> when the target has APP_PASSWORD set
 //   SMOKE_SEND_TO=you@example.com npm run smoke   -> also sends ONE real email (off by default)
 // Everything it creates is deleted at the end.
 import fs from 'fs';
