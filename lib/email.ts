@@ -3,6 +3,14 @@ import { cfg } from './config';
 export async function sendEmail(to: string, subject: string, body: string): Promise<string> {
   if (!cfg.resendKey() || !cfg.emailFrom())
     throw new Error('Email is not configured. Set RESEND_API_KEY and EMAIL_FROM in .env.local.');
+  // Test mode: send to the redirect address, and say who it was meant for.
+  const redirect = cfg.emailRedirect();
+  const realTo = to;
+  if (redirect) {
+    to = redirect;
+    subject = `[Test → ${realTo}] ${subject}`;
+    body = `[Test mode: this email was intended for ${realTo}]\n\n${body}`;
+  }
   const res = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: { authorization: `Bearer ${cfg.resendKey()}`, 'content-type': 'application/json' },

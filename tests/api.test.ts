@@ -188,3 +188,33 @@ describe('redraft / edit / delete / status', () => {
     expect(text).not.toMatch(/secret/);
   });
 });
+
+describe('email test mode (EMAIL_REDIRECT_TO)', () => {
+  it('delivers to the redirect address, labels the intended candidate, and still updates the status', async () => {
+    const f = resendOk();
+    process.env.EMAIL_REDIRECT_TO = 'owner@acme.test';
+    const c = await add('aisha-rahman.txt', 'SPM');
+    const res = await SEND(new Request('http://x', json({ to: c.email, subject: 'Hello', body: 'Body text' })), ctx(c.id));
+    const out = (await res.json()).candidate;
+    expect(res.status).toBe(200);
+    const sent = JSON.parse(f.mock.calls[0][1].body);
+    expect(sent.to).toEqual(['owner@acme.test']);
+    expect(sent.subject).toBe('[Test → aisha.rahman@example.com] Hello');
+    expect(sent.text).toContain('intended for aisha.rahman@example.com');
+    expect(sent.text).toContain('Body text');
+    expect(out.status).toBe('invited');
+    expect(out.email).toBe('aisha.rahman@example.com'); // candidate's real address is kept
+  });
+  it('sends to the candidate normally when test mode is off', async () => {
+    const f = resendOk();
+    const c = await add();
+    await SEND(new Request('http://x', json({ to: c.email, subject: 'Hello', body: 'B' })), ctx(c.id));
+    const sent = JSON.parse(f.mock.calls[0][1].body);
+    expect(sent.to).toEqual([c.email]);
+    expect(sent.subject).toBe('Hello');
+  });
+  it('status reports the redirect address', async () => {
+    process.env.EMAIL_REDIRECT_TO = 'owner@acme.test';
+    expect(await (await STATUS()).json()).toMatchObject({ emailRedirect: 'owner@acme.test' });
+  });
+});

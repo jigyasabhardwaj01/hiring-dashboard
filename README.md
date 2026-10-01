@@ -37,6 +37,7 @@ You can also upload the files in `sample-cvs/` to try the real flow.
 | `LLM_API_KEY` | Your AI provider key |
 | `LLM_MODEL` | Optional override (defaults: `gemini-3.8-flash` / `claude-sonnet-5-5` / `gpt-4o`) |
 | `RESEND_API_KEY` | From resend.com |
+| `EMAIL_REDIRECT_TO` | Optional test mode: every email is delivered to this address (subject shows the intended candidate). Use your Resend account email while on the sandbox sender; remove once your domain is verified |
 | `EMAIL_FROM` | e.g. `Acme Hiring <hiring@acme.com>`. The domain must be verified in Resend |
 | `DATABASE_URL` | Optional. Neon/Postgres connection string; the table is created automatically |
 | `SUPABASE_URL`, `SUPABASE_SERVICE_KEY` | Optional. Leave blank to store data in `./data` on your computer |

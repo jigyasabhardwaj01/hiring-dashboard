@@ -1,6 +1,6 @@
 import type { Role, Status } from './types';
 
-export interface AppStatus { llm: string; llmReady: boolean; emailReady: boolean; storage: string; threshold: number }
+export interface AppStatus { llm: string; llmReady: boolean; emailReady: boolean; emailRedirect: string | null; storage: string; threshold: number }
 
 export async function api<T>(url: string, init?: RequestInit): Promise<T> {
   let res: Response;

@@ -4,7 +4,7 @@ import path from 'path';
 import { afterEach, beforeEach, vi } from 'vitest';
 
 let dir: string;
-const CLEAR = ['DATABASE_URL', 'SUPABASE_URL', 'SUPABASE_SERVICE_KEY', 'LLM_API_KEY', 'LLM_MODEL', 'RESEND_API_KEY', 'EMAIL_FROM', 'INTERVIEW_THRESHOLD'];
+const CLEAR = ['EMAIL_REDIRECT_TO', 'DATABASE_URL', 'SUPABASE_URL', 'SUPABASE_SERVICE_KEY', 'LLM_API_KEY', 'LLM_MODEL', 'RESEND_API_KEY', 'EMAIL_FROM', 'INTERVIEW_THRESHOLD'];
 
 // Every test gets an isolated temp data dir and NO real credentials: tests never touch Neon, Resend or an LLM.
 beforeEach(() => {

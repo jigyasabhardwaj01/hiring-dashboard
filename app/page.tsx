@@ -65,6 +65,7 @@ export default function Page() {
             <div className="hidden items-center gap-2 md:flex" aria-label="System status">
               <Pill ok={status.llmReady && status.llm !== 'mock'} label={status.llm === 'mock' ? 'AI: demo mode' : status.llmReady ? `AI: ${status.llm}` : 'AI: no key'} detail={status.llm === 'mock' ? 'Template-based briefs; set LLM_PROVIDER and LLM_API_KEY' : status.llmReady ? 'AI provider configured' : 'Set LLM_API_KEY in .env.local'} />
               <Pill ok={status.emailReady} label={status.emailReady ? 'Email ready' : 'Email: not set up'} detail={status.emailReady ? 'Resend configured' : 'Set RESEND_API_KEY and EMAIL_FROM'} />
+              {status.emailRedirect && <Pill ok={false} label={`Test mode → ${status.emailRedirect}`} detail="Every email is delivered to this address instead of the candidate" />}
               <Pill ok label={`DB: ${status.storage}`} detail="Where candidates are stored" />
             </div>
           )}

@@ -89,7 +89,7 @@ export function DetailPanel({ c, status, onChange, onRemove, onBack, notify }: {
     await run('send', async () => {
       const { candidate } = await api<{ candidate: Candidate }>(`/api/candidates/${c.id}/send`, postJson({ to, subject, body }));
       onChange(candidate);
-    }, `Email sent to ${to.trim()}.`);
+    }, status?.emailRedirect ? `Email sent to ${status.emailRedirect} (test mode).` : `Email sent to ${to.trim()}.`);
   };
 
   return (
@@ -152,6 +152,7 @@ export function DetailPanel({ c, status, onChange, onRemove, onBack, notify }: {
         {tab === 'email' && (c.brief ? (
           <div className="space-y-4">
             {sent && <Alert kind="info">Sent {c.sent_at && new Date(c.sent_at).toLocaleString()} to {c.email}.</Alert>}
+            {!sent && !emailOff && status?.emailRedirect && <Alert kind="info">Test mode: emails are delivered to <b>{status.emailRedirect}</b> instead of the candidate, with the intended recipient shown in the subject.</Alert>}
             {!sent && emailOff && <Alert kind="warn">Email isn’t set up yet. Add RESEND_API_KEY and EMAIL_FROM to .env.local to enable sending.</Alert>}
             {!sent && (
               <div className="flex flex-wrap items-center gap-2 text-sm">
@@ -202,7 +203,7 @@ export function DetailPanel({ c, status, onChange, onRemove, onBack, notify }: {
       <Modal open={confirmSend} onClose={() => setConfirmSend(false)} title={verdict === 'interview' ? 'Send interview invite?' : 'Send rejection?'}
         footer={<><button className={btn.secondary} onClick={() => setConfirmSend(false)}>Cancel</button><button className={btn.primary} onClick={send}>Send now</button></>}>
         <dl className="space-y-2 text-sm">
-          <div><dt className="text-xs text-slate-500">To</dt><dd className="font-medium">{to.trim()}</dd></div>
+          <div><dt className="text-xs text-slate-500">To</dt><dd className="font-medium">{status?.emailRedirect ? <>{status.emailRedirect} <span className="font-normal text-slate-500">(test mode · intended for {to.trim()})</span></> : to.trim()}</dd></div>
           <div><dt className="text-xs text-slate-500">Subject</dt><dd className="font-medium">{subject}</dd></div>
           <div><dt className="text-xs text-slate-500">Message</dt><dd className="max-h-48 overflow-auto whitespace-pre-wrap rounded-xl bg-blush-50/60 p-3">{body}</dd></div>
         </dl>

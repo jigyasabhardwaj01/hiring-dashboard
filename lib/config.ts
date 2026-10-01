@@ -3,6 +3,8 @@ export const cfg = {
   llmKey: () => process.env.LLM_API_KEY || '',
   model: () => process.env.LLM_MODEL || '',
   resendKey: () => process.env.RESEND_API_KEY || '',
+  // Test mode: deliver every email to this one address instead of the candidate (Resend's sandbox only allows the account owner).
+  emailRedirect: () => (process.env.EMAIL_REDIRECT_TO || '').trim(),
   emailFrom: () => process.env.EMAIL_FROM || '',
   company: () => process.env.COMPANY_NAME || 'our company',
   founder: () => process.env.FOUNDER_NAME || 'The Founder',

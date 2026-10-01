@@ -8,6 +8,7 @@ export async function GET() {
     llm: cfg.provider(),
     llmReady: llmReady(),
     emailReady: emailReady(),
+    emailRedirect: cfg.emailRedirect() || null,
     storage: cfg.postgres() ? 'neon postgres' : cfg.supabase() ? 'supabase' : 'local file',
     threshold: cfg.threshold(),
   });
